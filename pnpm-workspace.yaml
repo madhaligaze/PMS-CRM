@@ -1,0 +1,11 @@
+# Корень - веб-клиент. backend/ - самостоятельный API со своим lock-файлом:
+# собирается и живёт отдельно (docker build ./backend), в монорепо он только
+# для удобства разработки.
+packages:
+  - backend
+
+sharedWorkspaceLockfile: false
+
+# esbuild нужен инструментам разработки (tsx, vitest, drizzle-kit, vite).
+allowBuilds:
+  esbuild: true

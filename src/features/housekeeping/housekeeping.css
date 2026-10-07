@@ -1,0 +1,267 @@
+@layer features {
+  /* ── Доска хозслужбы ───────────────────────────────────────────────── */
+  .hk-figures {
+    margin-bottom: var(--s-6);
+  }
+  .hk-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+  .hk-maid {
+    width: auto;
+    min-width: 220px;
+  }
+  .hk-floor + .hk-floor {
+    margin-top: var(--s-6);
+  }
+  .hk-floor-title {
+    margin-bottom: var(--s-2);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+  }
+
+  /* Номера - клетками одной сетки, как план этажа: общая волосяная линия. */
+  .hk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(212px, calc(50% - 1px)), 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .hk-tile {
+    display: grid;
+    align-content: start;
+    gap: 3px;
+    min-width: 0;
+    min-height: 118px;
+    padding: var(--s-3) var(--s-4) var(--s-4);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    text-align: left;
+    transition: background-color var(--dur-1) var(--ease-out);
+  }
+  .hk-tile:hover {
+    background: var(--surface-2);
+  }
+  /* Заезд сегодня, а номер не проверен: рамка тушью вокруг клетки. */
+  .hk-tile[data-urgent] {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .hk-tile-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    min-width: 0;
+  }
+  .hk-num {
+    font-size: var(--fs-xl);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .hk-type {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Состояние словом и весом: чем больше работы, тем тяжелее слово. */
+  .hk-status {
+    margin-top: 2px;
+    font-weight: 450;
+  }
+  .hk-tile[data-status='dirty'] .hk-status {
+    font-weight: 650;
+  }
+  .hk-tile[data-status='cleaning'] .hk-status,
+  .hk-tile[data-status='clean'] .hk-status {
+    font-weight: 550;
+  }
+  .hk-tile[data-status='inspected'] .hk-status,
+  .hk-tile[data-status='repair'] .hk-status {
+    color: var(--muted);
+  }
+  .hk-dnd {
+    font-weight: 450;
+  }
+  .hk-occ {
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  .hk-tile[data-urgent] .hk-occ {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .hk-task {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    line-height: 1.35;
+  }
+  .hk-task[data-overdue] {
+    color: var(--danger);
+  }
+
+  /* ── Список задач ──────────────────────────────────────────────────── */
+  .hk-table td {
+    vertical-align: middle;
+  }
+  .hk-room-link {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .hk-assign {
+    width: 230px;
+    min-height: var(--control-h-sm);
+    height: var(--control-h-sm);
+    font-size: var(--fs-sm);
+  }
+  .hk-inspect {
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+
+  /* ── Окно номера ───────────────────────────────────────────────────── */
+  .hk-sub {
+    margin-bottom: var(--s-2);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+  }
+  .hk-tasks {
+    border-top: 1px solid var(--line);
+  }
+  .hk-task-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hk-task-what {
+    min-width: 0;
+    flex: 1 1 260px;
+  }
+
+  @media (max-width: 760px) {
+    .hk-maid {
+      width: 100%;
+    }
+    .hk-tile {
+      min-height: 0;
+      padding: var(--s-3);
+    }
+    .hk-assign {
+      width: 100%;
+    }
+  }
+
+  /* ── Мои уборки: телефон горничной ─────────────────────────────────── */
+  .mt {
+    max-width: 720px;
+  }
+  .mt-group + .mt-group {
+    margin-top: var(--s-8);
+  }
+  .mt-group-title {
+    margin-bottom: var(--s-3);
+    font-size: var(--fs-md);
+    font-weight: 600;
+  }
+  .mt-list {
+    border-top: 1px solid var(--line);
+  }
+  .mt-card {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .mt-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+  }
+  .mt-num {
+    font-size: var(--fs-2xl);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .mt-kind {
+    font-weight: 600;
+  }
+  .mt-due {
+    margin-left: auto;
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+  }
+  .mt-card[data-overdue] .mt-due {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .mt-line {
+    color: var(--ink-2);
+  }
+  /* Возврат от супервайзера: что переделать - главное в карточке. */
+  .mt-returned {
+    font-weight: 600;
+  }
+  .mt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-1);
+  }
+  .mt-actions .btn-primary {
+    min-width: 180px;
+  }
+  /* Номер в работе - прямо сейчас, поэтому у него черта слева. */
+  .mt-card[data-status='in_progress'] {
+    padding-left: var(--s-4);
+    box-shadow: inset 3px 0 0 var(--ink);
+  }
+  .mt-card[data-status='done'],
+  .mt-card[data-status='inspected'],
+  .mt-card[data-status='skipped'] {
+    color: var(--muted);
+  }
+  .mt-checklist {
+    display: grid;
+    gap: var(--s-2);
+  }
+  @media (max-width: 760px) {
+    .mt-actions .btn {
+      flex: 1 1 auto;
+    }
+  }
+
+  /* ── Ремонт ────────────────────────────────────────────────────────── */
+  .mn-urgency {
+    white-space: nowrap;
+  }
+  .mn-urgency[data-u='high'] {
+    font-weight: 600;
+  }
+  .mn-urgency[data-u='critical'] {
+    color: var(--danger);
+    font-weight: 650;
+  }
+  .mn-urgency[data-u='low'] {
+    color: var(--muted);
+  }
+  .problem-block {
+    padding-top: var(--s-2);
+    border-top: 1px solid var(--line);
+  }
+}

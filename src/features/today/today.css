@@ -1,0 +1,88 @@
+@layer features {
+  .today .page-title {
+    font-size: var(--fs-4xl);
+  }
+  @media (max-width: 760px) {
+    .today .page-title {
+      font-size: var(--fs-2xl);
+    }
+  }
+  .today-clock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--s-5);
+  }
+  .today-attention {
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .attention-list {
+    display: grid;
+    gap: 0;
+  }
+  .attention-list li {
+    display: grid;
+    grid-template-columns: minmax(200px, 300px) 1fr;
+    gap: var(--s-4);
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+  }
+  .attention-list li:first-child {
+    border-top: 0;
+  }
+  /* Проблема - красным словом слева; что именно - тушью справа. */
+  .attention-list .a-what {
+    color: var(--danger);
+    font-weight: 500;
+  }
+  .attention-list .a-link {
+    text-align: left;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--line-strong);
+    text-underline-offset: 4px;
+  }
+  .attention-list .a-link:hover {
+    text-decoration-color: var(--ink);
+  }
+  @media (max-width: 640px) {
+    .attention-list li {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+  .today-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-10);
+    padding-top: var(--s-6);
+  }
+  @media (max-width: 1000px) {
+    .today-cols {
+      grid-template-columns: 1fr;
+      gap: var(--s-6);
+    }
+  }
+  .today .room-cell {
+    font-weight: 600;
+    width: 64px;
+  }
+  /* Уже заселённые и выехавшие уходят на второй план, но остаются в списке дня. */
+  .today tr[data-done='true'] td {
+    color: var(--muted);
+  }
+  .today-shift {
+    margin-top: var(--s-8);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+  .today-shift a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--line-strong);
+  }
+}

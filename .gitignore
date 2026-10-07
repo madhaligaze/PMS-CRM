@@ -1,0 +1,44 @@
+# зависимости и сборка
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# секреты и локальное окружение
+.env
+.env.*
+!.env.example
+
+# локальные данные (встроенная БД, загруженные файлы)
+.data/
+
+# тесты и покрытие
+coverage/
+
+# логи
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# редакторы
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# личные заметки и настройки инструментов разработчика
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+
+# отчёты e2e и стресс-прогонов
+playwright-report/
+test-results/
+blob-report/
+e2e/.auth/
+e2e/.out/

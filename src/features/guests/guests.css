@@ -1,0 +1,41 @@
+@layer features {
+  .guest-name {
+    font-weight: 500;
+  }
+  .guest-name:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .guest-page .page-title .title-tag {
+    vertical-align: 10px;
+    margin-left: var(--s-3);
+  }
+  .guest-page .figures {
+    margin-bottom: var(--s-2);
+  }
+  .guest-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-10);
+  }
+  @media (max-width: 900px) {
+    .guest-cols {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+  .guest-dupes {
+    margin-top: var(--s-2);
+  }
+  .dupe-row {
+    padding: var(--s-2) 0;
+    border-top: 1px solid var(--line);
+  }
+  .dupe-row:first-of-type {
+    border-top: 0;
+  }
+  .doc-list li {
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid var(--line);
+  }
+}

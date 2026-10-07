@@ -1,0 +1,145 @@
+/*
+  Токены Bizdin Auyl. Стандарт и его причины - docs/design-standard.md.
+
+  Палитра - бумага и тушь: интерфейс не берёт оттенков. Цвет в продукте
+  означает только две вещи: красный - отказ или проблема, зелёный - приход
+  денег. Единственный хроматический жест - свет на сцене входа.
+
+  Все слои объявлены здесь: неслоёных правил в проекте нет.
+*/
+@layer reset, tokens, base, components, features, utilities;
+
+@layer tokens {
+  :root {
+    color-scheme: light;
+
+    /* Поверхности */
+    --bg: #f3f1ea;
+    --surface: #faf9f5;
+    --surface-2: #ebe9e0;
+    --surface-3: #e2dfd4;
+
+    /* Текст */
+    --ink: #16170f;
+    --ink-2: #45463d;
+    --muted: #696a5f;
+    --on-ink: #f6f4ec;
+
+    /* Линии: волосяная - разделитель, field - граница поля (3:1 к фону) */
+    --line: #dcd9cd;
+    --line-strong: #b4b1a3;
+    --field-line: #858377;
+
+    /* Смысловые цвета: только отказ и приход денег */
+    --danger: #a3291f;
+    --danger-wash: color-mix(in srgb, var(--danger) 9%, transparent);
+    --money: #1d6b3c;
+
+    /* Небо входа (sky-stage.tsx): днём голубое с облаками, ночью - закат.
+       --stage-bg - цвет до первого кадра неба и без WebGL, --stage-fg -
+       тумблер и надписи на небе, --stage-mark - шаңырақ. */
+    --stage-bg: #8fc3ef;
+    --stage-fg: #ffffff;
+    --stage-mark: #ffffff;
+    --theme-shift: 900ms;
+
+    /* Вуаль под выдвижными панелями */
+    --veil: color-mix(in srgb, var(--ink) 22%, transparent);
+
+    /* Шрифт: одна гарнитура, как в обоих референсах */
+    --font: 'Onest Variable', 'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --fs-xs: 11.5px;
+    --fs-sm: 12.5px;
+    --fs-base: 14px;
+    --fs-md: 15px;
+    --fs-lg: 17px;
+    --fs-xl: 21px;
+    --fs-2xl: 27px;
+    --fs-3xl: 36px;
+    --fs-4xl: 52px;
+    --lh-tight: 1.12;
+    --lh-snug: 1.3;
+    --lh-body: 1.45;
+
+    /* Шаг 4 px */
+    --s-1: 4px;
+    --s-2: 8px;
+    --s-3: 12px;
+    --s-4: 16px;
+    --s-5: 20px;
+    --s-6: 24px;
+    --s-8: 32px;
+    --s-10: 40px;
+    --s-12: 48px;
+    --s-16: 64px;
+
+    --topbar-h: 52px;
+    --page-pad: 32px;
+    --control-h: 38px;
+    --control-h-sm: 30px;
+
+    /* Движение: терпеливое на сцене, быстрое в работе */
+    --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-in-out: cubic-bezier(0.7, 0, 0.2, 1);
+    --dur-1: 110ms;
+    --dur-2: 200ms;
+    --dur-3: 320ms;
+    --dur-4: 560ms;
+
+    --z-topbar: 20;
+    --z-modal: 40;
+    --z-dialog: 50;
+    --z-toast: 60;
+    --z-palette: 70;
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+
+    --bg: #0e100f;
+    --surface: #151715;
+    --surface-2: #1c1e1b;
+    --surface-3: #242622;
+
+    --ink: #f1eedc;
+    --ink-2: #c7c4b1;
+    --muted: #929182;
+    --on-ink: #0e100f;
+
+    --line: #272924;
+    --line-strong: #41433c;
+    --field-line: #6a6b62;
+
+    --danger: #f07a66;
+    --money: #7fd69a;
+
+    --stage-bg: #f0a28f;
+    --stage-fg: #2a1520;
+    --stage-mark: #2a1520;
+
+    --veil: color-mix(in srgb, #000 55%, transparent);
+  }
+
+  @media (max-width: 760px) {
+    :root {
+      --page-pad: 16px;
+      --control-h: 44px;
+      --control-h-sm: 36px;
+    }
+  }
+
+  @media (pointer: coarse) {
+    :root {
+      --control-h: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --dur-1: 0ms;
+      --dur-2: 0ms;
+      --dur-3: 0ms;
+      --dur-4: 0ms;
+    }
+  }
+}

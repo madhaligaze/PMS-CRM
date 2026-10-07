@@ -1,0 +1,299 @@
+@layer features {
+  .title-tag {
+    margin-left: var(--s-2);
+    vertical-align: 4px;
+  }
+  .card-tabs {
+    margin: calc(var(--s-2) * -1) 0 var(--s-5);
+  }
+  .link {
+    text-decoration: underline;
+    text-decoration-color: var(--line-strong);
+    text-underline-offset: 4px;
+  }
+  .link:hover {
+    text-decoration-color: var(--ink);
+  }
+  .strong {
+    font-weight: 650;
+  }
+  .danger-quiet {
+    color: var(--danger);
+  }
+  .danger-quiet:hover:not(:disabled) {
+    color: var(--danger);
+  }
+  .form-actions {
+    margin-top: var(--s-2);
+  }
+
+  .balance-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+
+  /* ── Новая бронь ─────────────────────────────────────────────────────── */
+  .nb .section:first-child {
+    padding-top: 0;
+  }
+  .picked-guest {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+  }
+  .pg-name {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-weight: 600;
+  }
+  .picker-search {
+    position: relative;
+  }
+  .picker-list {
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .picker-list li + li {
+    border-top: 1px solid var(--line);
+  }
+  .picker-list button {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-1) var(--s-3);
+    width: 100%;
+    padding: 9px var(--s-3);
+    text-align: left;
+  }
+  .picker-list button:hover,
+  .picker-list button:focus-visible {
+    background: var(--surface-2);
+    outline: none;
+  }
+  .pl-name {
+    font-weight: 550;
+  }
+
+  .room-pick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .room-choice {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1px;
+    min-width: 92px;
+    min-height: 50px;
+    padding: 6px 10px;
+  }
+  .room-choice:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .rc-num {
+    font-size: var(--fs-md);
+    font-weight: 650;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .rc-type,
+  .rc-state {
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    font-weight: 450;
+  }
+  .rc-state.danger {
+    color: var(--danger);
+    font-weight: 600;
+  }
+
+  .quote {
+    margin-top: var(--s-4);
+    padding: var(--s-4);
+    background: var(--surface-2);
+    transition: opacity var(--dur-2) var(--ease-out);
+  }
+  .quote[data-loading='true'] {
+    opacity: 0.6;
+  }
+  .quote-nights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px var(--s-4);
+    margin-bottom: var(--s-3);
+    font-size: var(--fs-sm);
+  }
+  .quote-sum,
+  .folio-total {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px var(--s-6);
+    max-width: 420px;
+    margin-left: auto;
+  }
+  .quote-sum dd,
+  .folio-total dd {
+    text-align: right;
+  }
+  .quote-sum dt,
+  .folio-total dt {
+    color: var(--ink-2);
+  }
+  .quote-sum .strong,
+  .folio-total .strong {
+    padding-top: 6px;
+    border-top: 1px solid var(--line-strong);
+    color: var(--ink);
+  }
+  .folio-total.big {
+    max-width: none;
+    margin-left: 0;
+    font-size: var(--fs-md);
+  }
+  .nb-submit {
+    position: sticky;
+    bottom: calc(var(--s-8) * -1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin: var(--s-4) calc(var(--s-6) * -1) calc(var(--s-8) * -1);
+    padding: var(--s-4) var(--s-6);
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+  .nb-total {
+    font-size: var(--fs-md);
+  }
+  .nb-total .money {
+    font-weight: 650;
+  }
+  @media (max-width: 760px) {
+    .nb-submit {
+      margin-left: calc(var(--s-4) * -1);
+      margin-right: calc(var(--s-4) * -1);
+      padding: var(--s-3) var(--s-4);
+    }
+  }
+
+  /* ── Счёт ───────────────────────────────────────────────────────────── */
+  .folio-table td {
+    vertical-align: middle;
+  }
+  .folio-table tr[data-storno='true'] td:first-child,
+  .folio-table tr[data-storno='true'] .money {
+    color: var(--muted);
+  }
+  .folio-total {
+    margin-top: var(--s-5);
+  }
+  .folio-actions {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+
+  /* ── История ────────────────────────────────────────────────────────── */
+  .history {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .history > li {
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .h-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-4);
+  }
+  .h-what {
+    font-weight: 550;
+  }
+  .h-meta {
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .h-changes {
+    margin-top: 4px;
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  .h-reason {
+    margin-top: 4px;
+    font-size: var(--fs-sm);
+  }
+
+  /* ── Заселение ──────────────────────────────────────────────────────── */
+  .ci-intro {
+    margin-bottom: var(--s-5);
+  }
+  .ci-intro h3 {
+    font-size: var(--fs-xl);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    margin-bottom: 4px;
+  }
+  .ci-step {
+    border-top: 1px solid var(--line);
+    padding: var(--s-4) 0 var(--s-5);
+  }
+  .ci-step-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    margin-bottom: var(--s-3);
+  }
+  .ci-step-head h3 {
+    flex: 1;
+    font-size: var(--fs-md);
+    font-weight: 600;
+  }
+  .ci-n {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    min-width: 16px;
+  }
+  .ci-state {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .ci-step[data-state='done'] .ci-state {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .ci-step[data-state='problem'] .ci-state {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .ci-step[data-state='todo'] .ci-state {
+    color: var(--ink-2);
+  }
+  .ci-blockers {
+    margin-bottom: var(--s-3);
+    padding-left: var(--s-4);
+    color: var(--danger);
+  }
+  .textarea.mrz {
+    font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}

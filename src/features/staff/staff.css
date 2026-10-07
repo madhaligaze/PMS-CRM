@@ -1,0 +1,158 @@
+@layer features {
+  .employee-state {
+    color: var(--ink-2);
+  }
+  .grid-span {
+    grid-column: 1 / -1;
+  }
+  .secrets dd {
+    user-select: all;
+    font-size: var(--fs-md);
+  }
+
+  /* ── Права: строка - раздел, справа выбор уровня словом ───────────── */
+  .rights-head {
+    margin-bottom: var(--s-2);
+  }
+  .rights-presets {
+    align-items: center;
+    margin-bottom: var(--s-4);
+  }
+  .rights {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .rights-group-title {
+    margin-bottom: var(--s-1);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+  }
+  .rights-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-4);
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .rights-title {
+    display: block;
+    font-weight: 500;
+  }
+  .rights-hint {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-snug);
+  }
+  .rights-levels {
+    display: inline-flex;
+    border: 1px solid var(--line-strong);
+  }
+  .rights-level {
+    min-width: 72px;
+    min-height: var(--control-h-sm);
+    padding: 0 var(--s-3);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .rights-level + .rights-level {
+    border-left: 1px solid var(--line);
+  }
+  .rights-level:hover:not(:disabled) {
+    color: var(--ink);
+  }
+  /* Выбранный уровень - вес и рамка тушью, не заливка. */
+  .rights-level[aria-checked='true'] {
+    color: var(--ink);
+    font-weight: 650;
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+  .rights-level:disabled {
+    cursor: not-allowed;
+    color: color-mix(in srgb, var(--muted) 55%, transparent);
+  }
+  .rights-power {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    cursor: pointer;
+  }
+  .rights-power .check {
+    margin-top: 2px;
+  }
+
+  /* ── Табель ─────────────────────────────────────────────────────────── */
+  .month-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-1);
+  }
+  .month-name {
+    min-width: 128px;
+    text-align: center;
+    font-weight: 500;
+  }
+  .timesheet tr[aria-expanded='true'] td,
+  .timesheet-detail td {
+    background: var(--surface-2);
+  }
+  .timesheet-detail td {
+    padding-top: 0;
+  }
+  .person-month {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-3);
+    padding: 0 0 var(--s-2);
+  }
+  .days {
+    width: 100%;
+  }
+  .day {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr) auto auto;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .day-date {
+    color: var(--ink-2);
+  }
+  .mark-time {
+    margin-right: var(--s-4);
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+  .mark-time:disabled {
+    cursor: default;
+  }
+  .mark-time:not(:disabled):hover {
+    text-decoration: underline;
+  }
+  .day-hours {
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 760px) {
+    .day {
+      grid-template-columns: 1fr auto;
+    }
+    .day-marks {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .rights-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
+    }
+    .rights-power {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .rights-levels {
+      justify-self: start;
+    }
+  }
+}

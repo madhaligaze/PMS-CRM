@@ -1,0 +1,404 @@
+@layer features {
+  .tape-page {
+    padding-bottom: var(--s-6);
+  }
+  .tape-head {
+    margin-bottom: var(--s-4);
+  }
+  .tape-nav {
+    gap: 4px;
+  }
+
+  .tape-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-5);
+    margin-bottom: var(--s-3);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  .tape-legend .lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bar-sample {
+    display: inline-block;
+    width: 24px;
+    height: 12px;
+    border: 1px solid transparent;
+  }
+
+  /* Прокрутка своя: шапка дней и колонка номеров липнут к краям. */
+  .tape {
+    --row-h: 40px;
+    position: relative;
+    overflow: auto;
+    max-height: calc(100dvh - var(--topbar-h) - 210px);
+    min-height: 320px;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+    overscroll-behavior: contain;
+  }
+  .tape[data-dragging='true'] {
+    cursor: grabbing;
+    user-select: none;
+  }
+  .tape-grid {
+    position: relative;
+  }
+
+  .tape-head-row {
+    position: sticky;
+    z-index: 6;
+    display: flex;
+    background: var(--bg);
+  }
+  .tape-months {
+    top: 0;
+    height: 24px;
+  }
+  .tape-days {
+    top: 24px;
+    height: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tape-occ {
+    top: 64px;
+    height: 24px;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .tape-corner {
+    position: sticky;
+    left: 0;
+    z-index: 7;
+    flex: none;
+    width: var(--head-w);
+    background: var(--bg);
+    border-right: 1px solid var(--line-strong);
+  }
+  .tape-corner-label {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--s-3);
+    color: var(--muted);
+    font-size: var(--fs-xs);
+  }
+  .tape-track {
+    position: relative;
+    flex: none;
+  }
+  .tape-month {
+    position: absolute;
+    top: 5px;
+    padding-left: 6px;
+    border-left: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tape-day {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    border-left: 1px solid var(--line);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .tape-day .wd {
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .tape-day .dn {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--ink-2);
+    padding: 2px 4px;
+  }
+  .tape-day[data-weekend='true'] .wd,
+  .tape-day[data-weekend='true'] .dn {
+    color: var(--ink);
+  }
+  /* Сегодня - перевёрнутый квадрат числа, без кружка. */
+  .tape-day[data-today='true'] .dn {
+    background: var(--ink);
+    color: var(--on-ink);
+    font-weight: 650;
+  }
+  .tape-occ-cell {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .tape-occ-cell[data-full='true'] {
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .tape-body {
+    position: relative;
+  }
+  .tape-stripes {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  .tape-weekend {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  }
+  .tape-today {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1.5px solid var(--ink);
+    z-index: 3;
+  }
+
+  .tape-group-head {
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    width: var(--head-w);
+    height: 30px;
+    padding: 9px var(--s-3) 0;
+    background: var(--bg);
+    border-right: 1px solid var(--line-strong);
+    color: var(--ink);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-align: left;
+  }
+  .tape-group-head .g-count {
+    color: var(--muted);
+    font-weight: 450;
+  }
+  .tape-group-head[aria-expanded='false'] .g-name::after {
+    content: ' (свёрнуто)';
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .tape-group + .tape-group .tape-group-head {
+    border-top: 1px solid var(--line);
+  }
+
+  .tape-row {
+    display: flex;
+    height: var(--row-h);
+    border-bottom: 1px solid var(--line);
+  }
+  .tape-room {
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    width: var(--head-w);
+    padding: 0 var(--s-3);
+    background: var(--bg);
+    border-right: 1px solid var(--line-strong);
+    min-width: 0;
+  }
+  .tape-room .r-num {
+    flex: none;
+    min-width: 36px;
+    font-size: var(--fs-md);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .tape-room .r-meta {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--muted);
+    font-size: var(--fs-xs);
+  }
+  .tape-room .r-meta .danger {
+    font-weight: 600;
+  }
+  @media (max-width: 760px) {
+    .tape-room {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+      padding: 0 var(--s-2);
+    }
+    .tape-room .r-meta {
+      max-width: 100%;
+    }
+  }
+
+  /* Сетка дней - фоном полосы, а не тысячей клеток. */
+  .tape-cells {
+    height: 100%;
+    background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+    background-size: var(--day-w) 100%;
+    cursor: cell;
+    touch-action: pan-x pan-y;
+  }
+  .tape-select {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    border: 1px dashed var(--ink);
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    z-index: 2;
+  }
+
+  /* ── Полосы броней: плотность и линия, не радуга ───────────────────── */
+  .bar,
+  .bar-sample[data-status] {
+    border: 1px solid var(--line-strong);
+  }
+  .bar {
+    position: absolute;
+    top: 6px;
+    height: calc(var(--row-h) - 12px);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    overflow: hidden;
+    font-size: var(--fs-sm);
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
+  .bar-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Предварительная - пунктир: бронь ещё не твёрдая. */
+  .bar[data-status='tentative'],
+  .bar-sample[data-status='tentative'] {
+    background: var(--bg);
+    border: 1px dashed var(--ink-2);
+    color: var(--ink);
+  }
+  /* Подтверждена - тон. */
+  .bar[data-status='confirmed'],
+  .bar-sample[data-status='confirmed'] {
+    background: var(--surface-3);
+    border-color: var(--field-line);
+    color: var(--ink);
+  }
+  /* Живёт - плита тушью: самое весомое на ленте. */
+  .bar[data-status='checked_in'],
+  .bar-sample[data-status='checked_in'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--on-ink);
+    font-weight: 500;
+  }
+  /* Выехал - бледный контур: история, на неё смотрят реже. */
+  .bar[data-status='checked_out'],
+  .bar-sample[data-status='checked_out'] {
+    background: transparent;
+    border-color: var(--line-strong);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .bar[data-cut-left='true'] {
+    border-left-style: none;
+  }
+  .bar[data-cut-right='true'] {
+    border-right-style: none;
+  }
+  /* Нужно действие - красная кромка слева и слово. */
+  .bar[data-problem='true'] {
+    box-shadow: inset 4px 0 0 var(--danger);
+    padding-left: 12px;
+  }
+  .bar-flag {
+    flex: none;
+    margin-left: auto;
+    padding: 2px 4px;
+    background: var(--danger);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  :root[data-theme='dark'] .bar-flag {
+    color: #160705;
+  }
+  .bar-tag {
+    flex: none;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+  .bar-grip {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 9px;
+    cursor: ew-resize;
+  }
+  .bar:hover .bar-grip {
+    border-right: 2px solid currentColor;
+    opacity: 0.5;
+  }
+  .bar[data-dragging='true'] {
+    z-index: 8;
+    box-shadow: 0 0 0 2px var(--ink);
+    opacity: 0.94;
+    cursor: grabbing;
+  }
+  .bar:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+    z-index: 7;
+  }
+
+  .block,
+  .block-sample {
+    background: repeating-linear-gradient(135deg, var(--line-strong) 0 1.5px, transparent 1.5px 7px);
+    border: 1px solid var(--line-strong);
+  }
+  .block {
+    position: absolute;
+    top: 6px;
+    height: calc(var(--row-h) - 12px);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: var(--ink-2);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    cursor: default;
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "bizdin-auyl",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bizdin Auyl: PMS + CRM гостиницы. Веб-клиент в корне, API - в backend/ (самостоятельный сервис).",
+  "type": "module",
+  "packageManager": "pnpm@12.3.4",
+  "scripts": {
+    "preinstall": "npx --yes only-allow pnpm",
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "api:gen": "openapi-typescript backend/openapi.json -o src/api/schema.d.ts",
+    "api:sync": "pnpm -C backend openapi && pnpm api:gen",
+    "db:up": "docker compose -f backend/compose.yaml up -d db",
+    "db:reset": "pnpm -C backend db:reset",
+    "dev:api": "pnpm -C backend dev",
+    "test:api": "pnpm -C backend test"
+  },
+  "dependencies": {
+    "@fontsource-variable/onest": "^5.3.1",
+    "@gsap/react": "^2.1.2",
+    "@tanstack/react-query": "^5.104.1",
+    "@tanstack/react-router": "^1.170.41",
+    "gsap": "^3.15.0",
+    "openapi-fetch": "^0.17.0",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "5.9.3",
+    "vite": "^8.3.3"
+  }
+}

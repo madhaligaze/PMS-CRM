@@ -1,0 +1,196 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  img,
+  svg,
+  canvas,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  button {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  :where(ul, ol)[role='list'] {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+@layer base {
+  html,
+  body {
+    /* Страница не ездит вбок. Именно clip: hidden заводит контейнер прокрутки
+       и выключает position: sticky у шапок. */
+    overflow-x: clip;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: var(--fs-base);
+    line-height: var(--lh-body);
+    letter-spacing: -0.006em;
+    font-feature-settings: 'kern' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 500;
+    line-height: var(--lh-tight);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  /* Цифры в учёте - табличные: суммы и даты стоят столбиком. */
+  .num,
+  time,
+  td,
+  .money {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Тонкая полоса прокрутки - единственное место, где допустимо скругление. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+
+  /* Смена темы - одно растворение всей страницы (View Transitions, theme-store.ts):
+     кадр в старой теме гаснет, кадр в новой проявляется за --theme-shift. Цвета на
+     элементах при смене темы не анимируются: тысячи переходов разом шли бы рывками.
+     Кадр новой темы живой: небо на входе меняет свет своим ходом и видно сквозь
+     растворение. Под растворением страница живая - клик доходит до неё. */
+  ::view-transition {
+    pointer-events: none;
+  }
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--theme-shift);
+    animation-timing-function: ease-in-out;
+  }
+  /* Тумблер из общего кадра вынут: растворяясь со страницей, его черта двоилась
+     бы - прежняя гасла бы на месте, новая ехала. */
+  .theme-vt .theme-switch {
+    view-transition-name: theme-switch;
+  }
+  ::view-transition-group(theme-switch),
+  ::view-transition-new(theme-switch) {
+    animation: none;
+  }
+  ::view-transition-old(theme-switch) {
+    display: none;
+  }
+  .theme-vt .theme-switch-icon {
+    transition:
+      color var(--theme-shift) ease-in-out,
+      transform 520ms var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(root),
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+    }
+  }
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .muted {
+    color: var(--muted);
+  }
+  .ink-2 {
+    color: var(--ink-2);
+  }
+  .danger {
+    color: var(--danger);
+  }
+  /* То, что требует внимания сейчас, - весом, а не цветом. */
+  .strong {
+    font-weight: 600;
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  /* Логин, временный пароль, ключ: моноширинно, чтобы не путать l и 1, O и 0. */
+  .mono {
+    font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+    letter-spacing: 0.02em;
+  }
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .only-mobile {
+    display: none;
+  }
+  @media (max-width: 760px) {
+    .only-mobile {
+      display: revert;
+    }
+    .only-desktop {
+      display: none !important;
+    }
+  }
+}
