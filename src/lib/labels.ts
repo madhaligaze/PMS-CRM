@@ -3,8 +3,9 @@
 export const BOOKING_STATUS: Record<string, string> = {
   tentative: 'Предварительная',
   confirmed: 'Подтверждена',
-  checked_in: 'Заселён',
-  checked_out: 'Выселен',
+  // Без рода гостя: гостья не должна читать «заселён».
+  checked_in: 'Проживает',
+  checked_out: 'Выезд оформлен',
   cancelled: 'Отменена',
   no_show: 'Незаезд',
 };

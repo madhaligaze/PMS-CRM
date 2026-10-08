@@ -203,12 +203,12 @@ function MoveTable({ rows, kind, onOpen }: { rows: Item[]; kind: 'arrival' | 'de
                   {b.guestName}
                   {b.isVip ? <span className="tag tag-strong" style={{ marginLeft: 6 }}>VIP</span> : null}
                   <span className="sub">
-                    {done ? (kind === 'arrival' ? 'заселён' : 'выехал') : b.status === 'tentative' ? 'предварительная бронь' : `бронь ${b.number}`}
+                    {done ? (kind === 'arrival' ? 'заселение оформлено' : 'выезд оформлен') : b.status === 'tentative' ? 'предварительная бронь' : `бронь ${b.number}`}
                   </span>
                 </td>
-                <td className="num">{kind === 'arrival' ? nightsLabel(diffDays(b.arrival, b.departure)) : done ? 'Выехал' : 'Живёт'}</td>
+                <td className="num">{kind === 'arrival' ? nightsLabel(diffDays(b.arrival, b.departure)) : done ? 'Выезд оформлен' : 'Проживает'}</td>
                 {kind === 'arrival' ? (
-                  <td>{done ? <span className="muted">заселён</span> : ready ? 'Готов' : <span className="danger">{HK_STATUS[b.roomHkStatus]}</span>}</td>
+                  <td>{done ? <span className="muted">в номере</span> : ready ? 'Готов' : <span className="danger">{HK_STATUS[b.roomHkStatus]}</span>}</td>
                 ) : null}
                 {can('folio.view') ? (
                   <td className="r">{b.due != null ? b.due > 0 ? <Money value={b.due} currency={property.currency} tone={kind === 'departure' && !done ? 'due' : undefined} /> : <span className="muted">оплачено</span> : '-'}</td>

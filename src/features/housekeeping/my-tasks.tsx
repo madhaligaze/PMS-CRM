@@ -73,7 +73,7 @@ export function MyTasksPage() {
           <h1 className="page-title">Мои уборки</h1>
           <p className="page-sub">
             {date ? `${dayTitle(date)} · ` : ''}
-            {mine.length ? (left ? `осталось ${left} из ${mine.length}` : 'всё сделано') : 'задач пока нет'}
+            {mine.length ? (left ? `осталось ${left} из ${mine.length}` : 'всё сделано') : free.length ? 'вам пока не назначено' : 'задач пока нет'}
           </p>
         </div>
         <div className="page-actions">

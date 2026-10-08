@@ -48,7 +48,8 @@ export function applyTheme(next: Theme): void {
     listeners.forEach((l) => l());
   };
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const start = (document as Document & { startViewTransition?: (cb: () => void) => { finished: Promise<unknown> } }).startViewTransition;
+  type Transition = { finished: Promise<unknown>; ready?: Promise<unknown>; updateCallbackDone?: Promise<unknown> };
+  const start = (document as Document & { startViewTransition?: (cb: () => void) => Transition }).startViewTransition;
   // Скрытая вкладка (тема сменилась вслед за системой) кадр не снимет.
   if (reduced || !start || document.visibilityState !== 'visible') {
     swap();
@@ -57,7 +58,11 @@ export function applyTheme(next: Theme): void {
   html.classList.add('theme-vt');
   const transition = start.call(document, swap);
   shifting = transition;
-  void transition.finished.finally(() => {
+  // Поворот телефона или смена размера окна посреди растворения срывает его:
+  // тема к этому моменту уже стоит, просто без растворения. Это не ошибка.
+  transition.ready?.catch(() => undefined);
+  transition.updateCallbackDone?.catch(() => undefined);
+  void transition.finished.catch(() => undefined).finally(() => {
     // Новое нажатие посреди растворения обрывает прежнее - класс снимает последнее.
     if (shifting !== transition) return;
     shifting = null;

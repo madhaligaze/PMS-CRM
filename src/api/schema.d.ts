@@ -181,6 +181,15 @@ export interface paths {
                         "application/json": components["schemas"]["Problem"];
                     };
                 };
+                /** @description Default Response */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Problem"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -667,6 +676,75 @@ export interface paths {
             };
         };
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/properties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Добавить гостиницу в сеть
+         * @description Только владелец. copyFrom - гостиница, из которой взять правила, лимиты и причины. Ответ - id новой гостиницы; её доступ появится в GET /me.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        name: string;
+                        address?: string | null;
+                        phone?: string | null;
+                        copyFrom?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            id: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Problem"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Problem"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -5848,6 +5926,7 @@ export interface components {
                 }[];
             };
             cancellations: {
+                bookingId: string | null;
                 bookingNumber: number | null;
                 guest: string | null;
                 kind: string;
@@ -5858,6 +5937,7 @@ export interface components {
                 at: string;
             }[];
             discounts: {
+                bookingId: string | null;
                 bookingNumber: number | null;
                 guest: string | null;
                 kind: string;
@@ -5868,6 +5948,7 @@ export interface components {
                 at: string;
             }[];
             stornos: {
+                bookingId: string | null;
                 bookingNumber: number | null;
                 guest: string | null;
                 kind: string;

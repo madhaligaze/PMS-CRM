@@ -211,6 +211,23 @@ export async function reloadMe(): Promise<void> {
   set({ me, propertyId: state.propertyId ?? pickProperty(me) });
 }
 
+/** Ещё одна гостиница сети: после создания владелец сразу в ней. */
+export async function createProperty(input: { name: string; address?: string | null; phone?: string | null; copyFrom?: string | null }): Promise<string> {
+  const token = await accessToken();
+  const res = await fetch(`${API_BASE}/api/v1/properties`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify(input),
+  });
+  const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+  if (!res.ok) throw new ApiError(res.status, body);
+  const id = String(body.id);
+  const me = await loadMe();
+  set({ me });
+  selectProperty(id);
+  return id;
+}
+
 export function selectProperty(id: string): void {
   try {
     localStorage.setItem(PROPERTY_KEY, id);

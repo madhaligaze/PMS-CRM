@@ -39,7 +39,7 @@ export function ReasonDialog({
       {text ? <p className="ink-2">{text}</p> : null}
       <div className="stack" style={{ marginTop: 'var(--s-4)' }}>
         {presets.length ? (
-          <div className="choices" role="radiogroup" aria-label="Причина">
+          <div className="choices" role="radiogroup" aria-label="Готовые причины">
             {presets.map((p) => (
               <button key={p} type="button" role="radio" className="choice" aria-checked={reason === p} onClick={() => setReason(p)}>
                 {p}

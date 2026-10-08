@@ -1,0 +1,55 @@
+# Bizdin Auyl целиком: база, API и веб одной командой.
+#   JWT_SECRET=$(openssl rand -base64 48) docker compose up -d --build
+# Веб - http://localhost:8080 (на сервере поставьте перед ним HTTPS-прокси).
+# При первом запуске на пустой базе открывается регистрация гостиницы.
+name: bizdin-auyl
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: bizdin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bizdin}
+      POSTGRES_DB: bizdin
+      TZ: UTC
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bizdin -d bizdin"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    image: bizdin-auyl-api:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://bizdin:${POSTGRES_PASSWORD:-bizdin}@db:5432/bizdin
+      JWT_SECRET: ${JWT_SECRET:?Задайте JWT_SECRET - не короче 32 символов}
+      MIGRATE_ON_START: "true"
+      PUBLIC_API_URL: ${PUBLIC_URL:-http://localhost:8080}
+      CORS_ORIGINS: ${PUBLIC_URL:-http://localhost:8080}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      REQUIRE_TOTP_FOR_PRIVILEGED: ${REQUIRE_TOTP_FOR_PRIVILEGED:-true}
+      FILES_DIR: /data/files
+    volumes:
+      - files:/data/files
+    restart: unless-stopped
+
+  web:
+    build: .
+    image: bizdin-auyl-web:latest
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  files:

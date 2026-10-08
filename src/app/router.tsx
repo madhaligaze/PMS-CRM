@@ -47,9 +47,11 @@ const appRoute = createRoute({
   id: 'app',
   component: AppShell,
   validateSearch: (s: Record<string, unknown>): { booking?: string | undefined } => ({ booking: str(s.booking) }),
-  beforeLoad: () => {
+  beforeLoad: ({ location }) => {
     const s = sessionState();
     if (s.status !== 'authenticated' || s.me?.mustChangePassword) throw redirect({ to: '/login' });
+    // Обязательный вход с кодом не настроен: сервер закрыл гостиницу, работает только кабинет.
+    if (s.me?.totpSetupRequired && location.pathname !== '/profile') throw redirect({ to: '/profile' });
   },
 });
 
@@ -59,6 +61,16 @@ const canNow = (...p: string[]) => {
   return p.some((x) => set.has(x));
 };
 
+/**
+ * Раздел по прямой ссылке открывается только тому, кому он открыт: иначе -
+ * на главную страницу роли, а не в пустой экран с отказом сервера.
+ */
+const only =
+  (...perms: string[]) =>
+  () => {
+    if (!canNow(...perms)) throw redirect({ to: homePath(canNow) });
+  };
+
 const indexRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/',
@@ -67,12 +79,13 @@ const indexRoute = createRoute({
   },
 });
 
-const todayRoute = createRoute({ getParentRoute: () => appRoute, path: '/today', component: TodayPage });
+const todayRoute = createRoute({ getParentRoute: () => appRoute, path: '/today', component: TodayPage, beforeLoad: only('dashboard.view') });
 
 const tapeRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/tape',
   component: TapePage,
+  beforeLoad: only('tape.view'),
   validateSearch: (s: Record<string, unknown>): { from?: string | undefined; span?: number | undefined } => ({
     from: str(s.from),
     span: typeof s.span === 'number' ? s.span : s.span ? Number(s.span) || undefined : undefined,
@@ -83,6 +96,7 @@ const bookingsRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/bookings',
   component: BookingsPage,
+  beforeLoad: only('booking.view'),
   validateSearch: (s: Record<string, unknown>): { view?: string | undefined; q?: string | undefined } => ({ view: str(s.view), q: str(s.q) }),
 });
 
@@ -90,20 +104,21 @@ const guestsRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/guests',
   component: GuestsPage,
+  beforeLoad: only('guest.view'),
   validateSearch: (s: Record<string, unknown>): { q?: string | undefined; filter?: string | undefined } => ({ q: str(s.q), filter: str(s.filter) }),
 });
-const guestRoute = createRoute({ getParentRoute: () => appRoute, path: '/guests/$guestId', component: GuestPage });
-const companiesRoute = createRoute({ getParentRoute: () => appRoute, path: '/companies', component: CompaniesPage });
-const cashRoute = createRoute({ getParentRoute: () => appRoute, path: '/cash', component: CashPage });
-const hkRoute = createRoute({ getParentRoute: () => appRoute, path: '/housekeeping', component: HousekeepingPage });
-const tasksRoute = createRoute({ getParentRoute: () => appRoute, path: '/tasks', component: MyTasksPage });
-const maintenanceRoute = createRoute({ getParentRoute: () => appRoute, path: '/maintenance', component: MaintenancePage });
-const reportsRoute = createRoute({ getParentRoute: () => appRoute, path: '/reports', component: ReportsPage });
-const auditRoute = createRoute({ getParentRoute: () => appRoute, path: '/audit', component: AuditPage });
-const staffRoute = createRoute({ getParentRoute: () => appRoute, path: '/staff', component: StaffPage });
-const positionsRoute = createRoute({ getParentRoute: () => appRoute, path: '/positions', component: PositionsPage });
-const timesheetRoute = createRoute({ getParentRoute: () => appRoute, path: '/timesheet', component: TimesheetPage });
-const settingsRoute = createRoute({ getParentRoute: () => appRoute, path: '/settings', component: SettingsPage });
+const guestRoute = createRoute({ getParentRoute: () => appRoute, path: '/guests/$guestId', component: GuestPage, beforeLoad: only('guest.view') });
+const companiesRoute = createRoute({ getParentRoute: () => appRoute, path: '/companies', component: CompaniesPage, beforeLoad: only('company.view') });
+const cashRoute = createRoute({ getParentRoute: () => appRoute, path: '/cash', component: CashPage, beforeLoad: only('cash.view') });
+const hkRoute = createRoute({ getParentRoute: () => appRoute, path: '/housekeeping', component: HousekeepingPage, beforeLoad: only('hk.view') });
+const tasksRoute = createRoute({ getParentRoute: () => appRoute, path: '/tasks', component: MyTasksPage, beforeLoad: only('hk.own_tasks', 'hk.view') });
+const maintenanceRoute = createRoute({ getParentRoute: () => appRoute, path: '/maintenance', component: MaintenancePage, beforeLoad: only('maintenance.view') });
+const reportsRoute = createRoute({ getParentRoute: () => appRoute, path: '/reports', component: ReportsPage, beforeLoad: only('reports.view') });
+const auditRoute = createRoute({ getParentRoute: () => appRoute, path: '/audit', component: AuditPage, beforeLoad: only('audit.view') });
+const staffRoute = createRoute({ getParentRoute: () => appRoute, path: '/staff', component: StaffPage, beforeLoad: only('staff.view') });
+const positionsRoute = createRoute({ getParentRoute: () => appRoute, path: '/positions', component: PositionsPage, beforeLoad: only('staff.view') });
+const timesheetRoute = createRoute({ getParentRoute: () => appRoute, path: '/timesheet', component: TimesheetPage, beforeLoad: only('attendance.view') });
+const settingsRoute = createRoute({ getParentRoute: () => appRoute, path: '/settings', component: SettingsPage, beforeLoad: only('settings.manage', 'rates.manage') });
 const profileRoute = createRoute({ getParentRoute: () => appRoute, path: '/profile', component: ProfilePage });
 
 const routeTree = rootRoute.addChildren([

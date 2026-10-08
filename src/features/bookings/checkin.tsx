@@ -82,7 +82,7 @@ export function CheckInFlow({ b, onDone }: { b: Booking; onDone: () => void }) {
   const checkIn = useMutation({
     mutationFn: () => unwrap(api.POST('/api/v1/properties/{propertyId}/bookings/{id}/check-in', { params: { path: { ...pid(), id: b.id } }, body: { keyIssued } })),
     onSuccess: (nb) => {
-      toast.info(`${nb.guest.fullName} заселён в номер ${nb.roomNumber}`, keyIssued ? 'Ключ выдан' : undefined);
+      toast.info(`Заселение в номер ${nb.roomNumber}: ${nb.guest.fullName}`, keyIssued ? 'Ключ выдан' : undefined);
       void invalidate('booking', 'bookings', 'tape', 'dashboard', 'hk', 'readiness');
       onDone();
     },

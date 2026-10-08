@@ -43,10 +43,9 @@ export function BookingsPage() {
       <div className="page-head">
         <div>
           <h1 className="page-title">Брони</h1>
-          <p className="page-sub">Поиск по фамилии, телефону или номеру брони</p>
         </div>
         <div className="page-actions">
-          <input className="input" style={{ width: 280 }} placeholder="Найти бронь" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Поиск брони" />
+          <input className="input" style={{ width: 300 }} placeholder="Фамилия, телефон или № брони" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Поиск брони" />
           {can('booking.create') ? (
             <button type="button" className="btn btn-primary" onClick={() => openNewBooking({})}>
               Новая бронь
@@ -72,7 +71,7 @@ export function BookingsPage() {
       {list.isPending ? (
         <Loading />
       ) : !list.data?.items.length ? (
-        <Empty title={term ? 'Ничего не нашли' : view === 'arrivals' ? 'Сегодня заездов нет' : view === 'departures' ? 'Сегодня выездов нет' : view === 'inhouse' ? 'Никто не живёт' : 'Броней пока нет'} />
+        <Empty title={term ? 'Ничего не нашли' : view === 'arrivals' ? 'Сегодня заездов нет' : view === 'departures' ? 'Сегодня выездов нет' : view === 'inhouse' ? 'Сейчас никто не живёт' : 'Броней пока нет'} />
       ) : (
         <div className="table-wrap">
           <table className="table">

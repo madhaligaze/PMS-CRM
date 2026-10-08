@@ -65,7 +65,7 @@ export function CheckOutFlow({ b, onDone }: { b: Booking; onDone: () => void }) 
         }),
       ),
     onSuccess: (nb) => {
-      toast.info(`${nb.guest.fullName} выселен`, `Номер ${nb.roomNumber} ушёл в уборку`);
+      toast.info(`Выезд из номера ${nb.roomNumber}: ${nb.guest.fullName}`, `Номер ${nb.roomNumber} ушёл в уборку`);
       void invalidate('booking', 'bookings', 'tape', 'dashboard', 'hk', 'folio', 'guest');
       onDone();
     },

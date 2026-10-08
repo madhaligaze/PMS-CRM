@@ -1,8 +1,12 @@
 name: CI
 
+# Каждый пуш в main и каждый PR: API с настоящим Postgres, веб, сквозные
+# тесты в пяти браузерах и устройствах, образ API. Задачи идут параллельно.
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -11,22 +15,165 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  FORCE_COLOR: '1'
+
 jobs:
-  test:
+  api:
+    name: API - типы и тесты (гонки, нагрузка, сеть гостиниц)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: bizdin
+          POSTGRES_PASSWORD: bizdin
+          POSTGRES_DB: bizdin
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U bizdin -d bizdin"
+          --health-interval 3s --health-timeout 3s --health-retries 30
     steps:
-      - uses: actions/checkout@v6
-
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
           cache-dependency-path: |
             pnpm-lock.yaml
             backend/pnpm-lock.yaml
-
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm test
+      - name: Типы
+        run: pnpm -C backend typecheck
+      - name: Тесты (vitest, Postgres)
+        run: pnpm -C backend test
+
+  web:
+    name: Веб - типы, сборка, контракт API
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            backend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Типы (веб и e2e)
+        run: |
+          pnpm typecheck
+          pnpm exec tsc -p e2e/tsconfig.json --noEmit
+      - name: Сборка
+        run: pnpm exec vite build
+      - name: Контракт API совпадает с кодом сервера
+        run: |
+          pnpm api:sync
+          git diff --exit-code -- backend/openapi.json src/api/schema.d.ts
+
+  e2e:
+    name: E2E - Playwright (Chromium, Firefox, WebKit, iPhone, Android)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: bizdin
+          POSTGRES_PASSWORD: bizdin
+          POSTGRES_DB: bizdin
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U bizdin -d bizdin"
+          --health-interval 3s --health-timeout 3s --health-retries 30
+    env:
+      E2E_BROWSERS: chromium,firefox,webkit
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            backend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Версия Playwright
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Кэш браузеров
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Браузеры
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Системные библиотеки браузеров
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium firefox webkit
+      - name: Сборка веба
+        run: pnpm exec vite build
+      - name: Сквозные тесты
+        run: pnpm exec playwright test
+      - name: Отчёт Playwright
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            e2e/.out/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  docker:
+    name: Docker - образ API собирается и стартует
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: bizdin
+          POSTGRES_PASSWORD: bizdin
+          POSTGRES_DB: bizdin
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U bizdin -d bizdin"
+          --health-interval 3s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Сборка образа
+        run: docker build -t bizdin-auyl-api:ci ./backend
+      - name: 'Запуск на пустой базе: миграции и готовность'
+        run: |
+          docker run -d --name api --network host \
+            -e DATABASE_URL=postgres://bizdin:bizdin@127.0.0.1:5433/bizdin \
+            -e JWT_SECRET=ci-secret-ci-secret-ci-secret-ci-secret-00 \
+            -e MIGRATE_ON_START=true -e PORT=4000 \
+            bizdin-auyl-api:ci
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:4000/health/ready >/dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4000/health/ready
+          curl -fsS http://127.0.0.1:4000/api/v1/setup | grep -q '"needed":true'
+      - name: Журнал контейнера
+        if: ${{ failure() }}
+        run: docker logs api

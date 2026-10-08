@@ -212,7 +212,7 @@ function BookingInfo({ b }: { b: Booking }) {
         </dd>
         {b.checkedInAt ? (
           <>
-            <dt>Заселён</dt>
+            <dt>Заселение</dt>
             <dd>
               {dateTime(b.checkedInAt, tz)}
               {b.keyIssuedAt ? <span className="muted"> · ключ выдан</span> : null}
@@ -221,7 +221,7 @@ function BookingInfo({ b }: { b: Booking }) {
         ) : null}
         {b.checkedOutAt ? (
           <>
-            <dt>Выселен</dt>
+            <dt>Выезд</dt>
             <dd>
               {dateTime(b.checkedOutAt, tz)}
               {b.rating ? <span className="muted"> · оценка {b.rating} из 5</span> : null}

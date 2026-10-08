@@ -53,6 +53,12 @@
       grid-template-columns: 1fr;
       gap: 2px;
     }
+    /* На телефоне ссылка - во всю строку и под палец, а не узкая полоска текста. */
+    .attention-list .a-link {
+      display: block;
+      width: 100%;
+      padding: 8px 0;
+    }
   }
   .today-cols {
     display: grid;

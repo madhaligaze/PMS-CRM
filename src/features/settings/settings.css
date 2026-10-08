@@ -1,0 +1,79 @@
+@layer features {
+  .settings .set-block:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .set-grid {
+    max-width: 920px;
+  }
+  .set-facts {
+    max-width: 640px;
+  }
+  .set-text {
+    max-width: 68ch;
+    margin-bottom: var(--s-3);
+  }
+  .set-check {
+    margin: var(--s-2) 0 var(--s-4);
+  }
+  .set-save {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-5) 0 0;
+  }
+  .set-link {
+    flex: 1 1 360px;
+    max-width: 640px;
+  }
+  .set-reasons {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 640px;
+  }
+  .set-reason-list {
+    border-top: 1px solid var(--line);
+  }
+  .set-reason-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .set-reason-add .input {
+    flex: 1 1 260px;
+  }
+  .set-rates-head {
+    align-items: flex-start;
+    margin-bottom: var(--s-2);
+  }
+  .set-rates-head .set-text {
+    margin: 0;
+  }
+  /* Таблицы цен разных тарифов - с одинаковыми колонками: глаз сравнивает их столбиком. */
+  .set-prices {
+    table-layout: fixed;
+    min-width: 720px;
+  }
+  .set-prices th:nth-child(1) {
+    width: 16%;
+  }
+  .set-prices th:nth-child(2) {
+    width: 22%;
+  }
+  .set-prices th:nth-child(3) {
+    width: 26%;
+  }
+  .set-prices th:nth-child(4) {
+    width: 14%;
+  }
+  .set-prices th:nth-child(5) {
+    width: 10%;
+  }
+  .set-prices th:nth-child(6) {
+    width: 12%;
+  }
+}

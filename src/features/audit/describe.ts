@@ -71,6 +71,7 @@ const ACTIONS: Record<string, string> = {
   'position.archive': 'Должность убрана',
   'position.apply': 'Права должности применены ко всем',
   'setup.done': 'Гостиница зарегистрирована',
+  'property.create': 'Гостиница добавлена в сеть',
   'user.profile': 'Имя или телефон изменены',
   'user.password_change': 'Смена пароля',
   'user.pin_change': 'Смена PIN',

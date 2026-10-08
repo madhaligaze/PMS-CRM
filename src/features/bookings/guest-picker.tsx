@@ -131,7 +131,7 @@ export function GuestPicker({ value, onChange }: { value: GuestChoice; onChange:
                 {m.guest.stays ? ` · ${m.guest.stays} ${plural(m.guest.stays, 'визит', 'визита', 'визитов')}` : ''}
               </span>
               <button type="button" className="btn btn-ghost btn-sm" onClick={() => onChange({ kind: 'existing', guest: m.guest })}>
-                Это он
+                Выбрать
               </button>
             </div>
           ))}

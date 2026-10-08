@@ -1,0 +1,174 @@
+@layer features {
+  .rep-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+    margin-bottom: var(--s-5);
+  }
+  .rep-date {
+    width: 170px;
+  }
+  .rep-day-title {
+    margin-left: var(--s-2);
+    font-weight: 500;
+  }
+  .rep-figures {
+    margin-bottom: var(--s-2);
+  }
+  /* Крупные числа - пропорциональными цифрами, табличные остаются столбцам. */
+  .rep-v {
+    font-variant-numeric: normal;
+  }
+  .rep-figures-quiet {
+    border: 0;
+    padding: 0;
+  }
+  .rep-narrow {
+    max-width: 560px;
+  }
+  .rep-empty td {
+    color: var(--muted);
+  }
+  .rep-future td {
+    color: var(--muted);
+  }
+  /* Пока подгружается новый период, прежний остаётся на месте и бледнеет. */
+  .is-refetching {
+    opacity: 0.55;
+    transition: opacity var(--dur-2) var(--ease-out);
+  }
+
+  /* ── Доля источника: полоса в ячейке, без цвета ────────────────────── */
+  .rep-share-h {
+    width: 32%;
+  }
+  .rep-share {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .rep-bar {
+    display: block;
+    height: 10px;
+    min-width: 2px;
+    max-width: calc(100% - 44px);
+    background: var(--ink-2);
+    border-radius: 0 4px 4px 0;
+  }
+  .rep-share-v {
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rep-export {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 720px;
+  }
+  .rep-export-form {
+    align-items: flex-end;
+    gap: var(--s-3);
+  }
+  .rep-export-form .field {
+    width: 190px;
+  }
+
+  /* ── Столбцы по дням ───────────────────────────────────────────────── */
+  .cc {
+    position: relative;
+    width: 100%;
+    outline-offset: 4px;
+    touch-action: pan-y;
+  }
+  .cc svg {
+    display: block;
+    overflow: visible;
+  }
+  .cc-grid {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .cc-axis {
+    stroke: var(--line-strong);
+    stroke-width: 1;
+  }
+  .cc-ytick,
+  .cc-xtick {
+    fill: var(--muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .cc-band {
+    fill: var(--surface-2);
+  }
+  .cc-bar {
+    fill: var(--ink-2);
+  }
+  .cc-bar[data-muted] {
+    fill: var(--muted);
+  }
+  .cc-bar[data-active] {
+    fill: var(--ink);
+  }
+  .cc-tip {
+    position: absolute;
+    top: -8px;
+    z-index: 2;
+    min-width: 168px;
+    padding: var(--s-2) var(--s-3);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    font-size: var(--fs-sm);
+    pointer-events: none;
+    translate: -50% -100%;
+  }
+  .cc-tip-title {
+    margin-bottom: 4px;
+    color: var(--muted);
+  }
+  .cc-tip-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    white-space: nowrap;
+  }
+  .cc-tip-v {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .cc-tip-l {
+    color: var(--ink-2);
+  }
+  .cc-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-bottom: var(--s-3);
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  .cc-key-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cc-swatch {
+    width: 10px;
+    height: 10px;
+    background: var(--ink-2);
+  }
+  .cc-swatch[data-muted] {
+    background: var(--muted);
+  }
+
+  @media (max-width: 760px) {
+    .rep-date {
+      width: 150px;
+    }
+    .rep-share-h {
+      width: auto;
+    }
+  }
+}

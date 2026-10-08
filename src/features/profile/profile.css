@@ -14,6 +14,10 @@
   .profile-block .section-title {
     margin: 0;
   }
+  .profile-lock {
+    max-width: 760px;
+    margin-bottom: var(--s-6);
+  }
   .totp-setup {
     display: grid;
     grid-template-columns: 168px minmax(0, 1fr);

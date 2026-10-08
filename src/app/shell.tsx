@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useCash, useDashboard } from '@/api/hooks';
-import { logout, useCan, useProperty, useSession } from '@/auth/session';
+import { logout, selectProperty, useCan, useProperty, useSession } from '@/auth/session';
 import { Mark } from '@/components/brand/mark';
 import { ThemeSwitch } from '@/components/theme/theme-switch';
 import { Menu } from '@/components/ui/menu';
@@ -31,15 +31,44 @@ function AttentionCount() {
   return n ? <span className="count" aria-label={`требует внимания: ${n}`}>{n}</span> : null;
 }
 
+/**
+ * Оболочка рисуется только при живой сессии с выбранной гостиницей. В момент
+ * выхода сессия уже пуста, а переход на вход ещё не случился: страницы под
+ * оболочкой в этот кадр не рисуются вовсе, а не падают без гостиницы.
+ */
 export function AppShell() {
+  const session = useSession();
+  if (session.status !== 'authenticated' || !session.me) return <div className="boot" aria-busy="true" />;
+  if (!session.me.properties.length) return <NoProperty />;
+  if (!session.me.properties.some((p) => p.id === session.propertyId)) return <div className="boot" aria-busy="true" />;
+  return <Shell />;
+}
+
+/** Учётная запись есть, а доступа ни к одной гостинице нет: сказать прямо, а не крутить загрузку. */
+function NoProperty() {
+  const navigate = useNavigate();
+  return (
+    <main className="page">
+      <h1 className="page-title">Нет доступа к гостинице</h1>
+      <p className="page-sub">Учётная запись работает, но ни одна гостиница вам не открыта. Обратитесь к управляющему.</p>
+      <button type="button" className="btn btn-ghost" style={{ marginTop: 'var(--s-6)' }} onClick={() => void logout().then(() => navigate({ to: '/login' }))}>
+        Выйти
+      </button>
+    </main>
+  );
+}
+
+function Shell() {
   const session = useSession();
   const property = useProperty();
   const can = useCan();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [sheet, setSheet] = useState(false);
   const navigate = useNavigate();
-  const nav = visibleNav(can);
-  const secondary = SECONDARY_NAV.filter((n) => allowed(can, n));
+  // Пока обязательный вход с кодом не настроен, разделы закрыты: в меню их нет вовсе.
+  const locked = !!session.me?.totpSetupRequired;
+  const nav = locked ? [] : visibleNav(can);
+  const secondary = SECONDARY_NAV.filter((n) => allowed(can, n) && (!locked || n.to === '/profile'));
   const active = (to: string) => path === to || path.startsWith(`${to}/`);
   const current = [...nav, ...secondary, ...PAGE_TITLES].find((n) => active(n.to));
 
@@ -57,6 +86,12 @@ export function AppShell() {
   }, []);
 
   const me = session.me!;
+  /** Другая гостиница - другие права: начинаем с её главной страницы, открытые окна закрываются. */
+  const switchTo = (id: string) => {
+    if (id === property.id) return;
+    selectProperty(id);
+    void navigate({ to: '/' });
+  };
   return (
     <>
       <header className="topbar">
@@ -74,13 +109,13 @@ export function AppShell() {
           ))}
         </nav>
         <div className="topbar-right">
-          {can('booking.view', 'guest.view') ? (
+          {!locked && can('booking.view', 'guest.view') ? (
             <button type="button" className="search-trigger" onClick={openPalette} aria-label="Поиск: гости, брони, номера">
               <span className="label">Поиск</span>
               <kbd>Ctrl K</kbd>
             </button>
           ) : null}
-          <ShiftLine />
+          {locked ? null : <ShiftLine />}
           <Menu
             label="Профиль"
             trigger={(p) => (
@@ -92,9 +127,30 @@ export function AppShell() {
           >
             {(close) => (
               <>
-                <div className="menu-label">{property.name}</div>
+                {me.properties.length > 1 ? (
+                  <>
+                    <div className="menu-label">Гостиница</div>
+                    {me.properties.map((p) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        className="menu-item" role="menuitem"
+                        aria-current={p.id === property.id || undefined}
+                        onClick={() => {
+                          close();
+                          switchTo(p.id);
+                        }}
+                      >
+                        {p.name}
+                      </button>
+                    ))}
+                    <div className="menu-sep" />
+                  </>
+                ) : (
+                  <div className="menu-label">{property.name}</div>
+                )}
                 {secondary.map((n) => (
-                  <Link key={n.to} to={n.to} className="menu-item" onClick={close}>
+                  <Link key={n.to} to={n.to} className="menu-item" role="menuitem" onClick={close}>
                     {n.label}
                   </Link>
                 ))}
@@ -104,7 +160,7 @@ export function AppShell() {
                 </div>
                 <button
                   type="button"
-                  className="menu-item"
+                  className="menu-item" role="menuitem"
                   onClick={() => {
                     close();
                     void logout().then(() => navigate({ to: '/login' }));
@@ -139,6 +195,28 @@ export function AppShell() {
               </Link>
             ))}
           </nav>
+          {me.properties.length > 1 ? (
+            <div className="sheet-properties">
+              <div className="muted">Гостиница</div>
+              <div className="choices" role="radiogroup" aria-label="Гостиница">
+                {me.properties.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    role="radio"
+                    className="choice"
+                    aria-checked={p.id === property.id}
+                    onClick={() => {
+                      setSheet(false);
+                      switchTo(p.id);
+                    }}
+                  >
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
           <div className="row-between" style={{ marginTop: 'var(--s-6)' }}>
             <div>
               <div style={{ fontWeight: 500 }}>{me.fullName}</div>

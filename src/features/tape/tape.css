@@ -190,6 +190,13 @@
     font-weight: 600;
     text-align: left;
   }
+  /* Пальцем по заголовку группы попадают с первого раза. */
+  @media (pointer: coarse), (max-width: 760px) {
+    .tape-group-head {
+      height: 36px;
+      padding-top: 11px;
+    }
+  }
   .tape-group-head .g-count {
     color: var(--muted);
     font-weight: 450;
@@ -400,5 +407,14 @@
     font-size: var(--fs-xs);
     font-weight: 600;
     cursor: default;
+  }
+
+  /* На телефоне полоса брони выше: в неё попадают пальцем, а не курсором. */
+  @media (pointer: coarse), (max-width: 760px) {
+    .bar,
+    .block {
+      top: 3px;
+      height: calc(var(--row-h) - 6px);
+    }
   }
 }

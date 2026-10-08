@@ -143,6 +143,11 @@
     background: var(--surface-2);
     outline: none;
   }
+  /* Текущая гостиница в списке - весом и чертой слева, как выбранная вкладка. */
+  .menu-item[aria-current] {
+    font-weight: 600;
+    box-shadow: inset 2px 0 0 var(--ink);
+  }
   .menu-item .hint {
     margin-left: auto;
     color: var(--muted);
@@ -199,6 +204,11 @@
   }
   .sheet-nav a[data-active='true'] {
     font-weight: 600;
+  }
+  .sheet-properties {
+    display: grid;
+    gap: var(--s-2);
+    margin-top: var(--s-6);
   }
 
   @media (max-width: 1100px) {

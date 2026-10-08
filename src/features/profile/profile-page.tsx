@@ -23,9 +23,12 @@ export function ProfilePage() {
   const property = useProperty();
   const can = useCan();
   const me = session.me!;
+  // Вход с кодом обязателен, а не настроен: сервер закрыл гостиницу до настройки.
+  // Поэтому здесь только то, что работает без неё, и блок с кодом - первым.
+  const locked = me.totpSetupRequired;
   return (
     <div className="page profile">
-      <CabinetTabs />
+      {locked ? null : <CabinetTabs />}
       <div className="page-head">
         <div>
           <h1 className="page-title">{me.fullName}</h1>
@@ -34,12 +37,18 @@ export function ProfilePage() {
           </p>
         </div>
       </div>
+      {locked ? (
+        <div className="alert profile-lock" role="alert">
+          <strong>Настройте вход с кодом из приложения.</strong> Для вашей учётной записи он обязателен: разделы гостиницы откроются сразу после настройки.
+        </div>
+      ) : null}
       <div className="profile-grid">
+        {locked ? <Totp /> : null}
         <Personal />
-        {can('attendance.self') ? <Attendance /> : null}
+        {can('attendance.self') && !locked ? <Attendance /> : null}
         <Password />
         <Pin />
-        <Totp />
+        {locked ? null : <Totp />}
       </div>
     </div>
   );

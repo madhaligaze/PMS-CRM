@@ -10,7 +10,7 @@ import { PhotoPicker, PhotoStrip, usePhotos } from '@/components/ui/photos';
 import { ReasonDialog } from '@/components/ui/reason-dialog';
 import { toast } from '@/components/ui/toast';
 import { History } from '@/features/bookings/history';
-import { dateTime, dayLong } from '@/lib/format';
+import { dateTime, dayLong, plural } from '@/lib/format';
 import { MAINT_STATUS, URGENCY } from '@/lib/labels';
 import { ProblemDialog } from './problem-dialog';
 import './housekeeping.css';
@@ -73,13 +73,13 @@ export function MaintenancePage() {
           {offSale ? (
             <div className="figure">
               <span className="v">{offSale}</span>
-              <span className="l">номеров снято с продажи</span>
+              <span className="l">{plural(offSale, 'номер снят с продажи', 'номера сняты с продажи', 'номеров снято с продажи')}</span>
             </div>
           ) : null}
           {rows.some((m) => m.urgency === 'critical') ? (
             <div className="figure" data-alert="true">
               <span className="v">{rows.filter((m) => m.urgency === 'critical').length}</span>
-              <span className="l">аварии</span>
+              <span className="l">{plural(rows.filter((m) => m.urgency === 'critical').length, 'авария', 'аварии', 'аварий')}</span>
             </div>
           ) : null}
         </div>

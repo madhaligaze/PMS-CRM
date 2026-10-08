@@ -295,7 +295,8 @@ export function PaymentDialog({
         }),
       ),
     onSuccess: (p) => {
-      toast.info(`${PAYMENT_KIND[p.kind]} № ${p.number} проведена`, p.fiscalNumber ? `Чек ${p.fiscalNumber}${p.fiscalTest ? ', тестовая касса' : ''}` : undefined);
+      const done: Record<string, string> = { payment: 'Оплата № N проведена', refund: 'Возврат № N проведён', deposit: 'Депозит № N принят', deposit_return: 'Депозит возвращён, документ № N' };
+      toast.info((done[p.kind] ?? 'Документ № N проведён').replace('N', String(p.number)), p.fiscalNumber ? `Чек ${p.fiscalNumber}${p.fiscalTest ? ', тестовая касса' : ''}` : undefined);
       void invalidate('folio', 'booking', 'bookings', 'cash', 'dashboard', 'tape', 'readiness');
       onDone();
     },

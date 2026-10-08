@@ -102,7 +102,7 @@ export function BookingEdit({ b, onDone }: { b: Booking; onDone: () => void }) {
           Даты <span className="aside">{nightsNow !== nightsWas ? `${nightsLabel(nightsWas)} → ${nightsLabel(nightsNow)}` : nightsLabel(nightsNow)}</span>
         </h3>
         <div className="grid-2">
-          <Field label="Заезд" htmlFor="be-arr" hint={inHouse ? 'Гость уже заселён' : undefined}>
+          <Field label="Заезд" htmlFor="be-arr" hint={inHouse ? 'Заселение уже оформлено' : undefined}>
             <input
               id="be-arr"
               type="date"

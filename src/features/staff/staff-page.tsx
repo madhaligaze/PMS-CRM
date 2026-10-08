@@ -25,12 +25,13 @@ const NO_RIGHTS: Rights = { sections: {}, powers: [] };
 
 /** Состояние одной строкой: словом, цвет - только для отказа. */
 function stateOf(s: Staff, tz: string): { text: string; fail?: boolean } {
-  if (s.archivedAt) return { text: `уволен ${dateTime(s.archivedAt, tz)}` };
+  // Без рода: «уволен», «входил» про сотрудницу читались бы с ошибкой.
+  if (s.archivedAt) return { text: `увольнение ${dateTime(s.archivedAt, tz)}` };
   if (!s.isActive) return { text: 'вход заблокирован', fail: true };
-  if (s.mustChangePassword) return { text: 'ещё не задал свой пароль' };
+  if (s.mustChangePassword) return { text: 'свой пароль ещё не задан' };
   if (s.totpRequired && !s.totpEnabled) return { text: 'не настроен второй фактор', fail: true };
   if (s.clockedIn) return { text: 'на работе' };
-  return { text: s.lastLoginAt ? `входил ${dateTime(s.lastLoginAt, tz)}` : 'ещё не входил' };
+  return { text: s.lastLoginAt ? `последний вход ${dateTime(s.lastLoginAt, tz)}` : 'входа ещё не было' };
 }
 
 function accessText(s: Staff): string {
@@ -368,7 +369,7 @@ function HireModal({ open, onClose, onDone }: { open: boolean; onClose: () => vo
         )}
         {error ? (
           <div className="alert" role="alert">
-            <strong>Не нанят.</strong> {error}
+            <strong>Найм не прошёл.</strong> {error}
           </div>
         ) : null}
       </div>
@@ -501,7 +502,7 @@ function EmployeeModal({ id, onClose, onSecrets }: { id: string | null; onClose:
   const archive = useMutation({
     mutationFn: (reason: string) => unwrap(api.DELETE('/api/v1/properties/{propertyId}/staff/{id}', { params: { path: { ...pid(), id: s!.id } }, body: { reason } })),
     onSuccess: () => {
-      done(`${s!.fullName} уволен`);
+      done(`Увольнение оформлено: ${s!.fullName}`);
       setConfirm(null);
       onClose();
     },
@@ -568,22 +569,22 @@ function EmployeeModal({ id, onClose, onSecrets }: { id: string | null; onClose:
                 >
                   {(close) => (
                     <>
-                      <button type="button" className="menu-item" onClick={() => (close(), resetPassword.mutate())}>
+                      <button type="button" className="menu-item" role="menuitem" onClick={() => (close(), resetPassword.mutate())}>
                         Сбросить пароль
                       </button>
-                      <button type="button" className="menu-item" onClick={() => (close(), newPin.mutate())}>
+                      <button type="button" className="menu-item" role="menuitem" onClick={() => (close(), newPin.mutate())}>
                         Выдать новый PIN
                       </button>
-                      <button type="button" className="menu-item" onClick={() => (close(), setConfirm('end'))}>
+                      <button type="button" className="menu-item" role="menuitem" onClick={() => (close(), setConfirm('end'))}>
                         Завершить сеансы
                       </button>
                       {s.isActive ? (
-                        <button type="button" className="menu-item" onClick={() => (close(), setConfirm('block'))}>
+                        <button type="button" className="menu-item" role="menuitem" onClick={() => (close(), setConfirm('block'))}>
                           Заблокировать вход
                         </button>
                       ) : null}
                       <div className="menu-sep" />
-                      <button type="button" className="menu-item danger" onClick={() => (close(), setConfirm('archive'))}>
+                      <button type="button" className="menu-item danger" role="menuitem" onClick={() => (close(), setConfirm('archive'))}>
                         Уволить
                       </button>
                     </>

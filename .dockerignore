@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+dist
+backend
+.git
+.github
+.claude
+.data
+e2e
+playwright-report
+test-results
+blob-report
+*.log
+.env
+.env.*
+CLAUDE.md
