@@ -21,7 +21,7 @@ env:
 jobs:
   api:
     name: API - типы и тесты (гонки, нагрузка, сеть гостиниц)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     services:
       postgres:
@@ -54,7 +54,7 @@ jobs:
 
   web:
     name: Веб - типы, сборка, контракт API
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -82,7 +82,7 @@ jobs:
 
   e2e:
     name: E2E - Playwright (Chromium, Firefox, WebKit, iPhone, Android)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     services:
       postgres:
@@ -142,7 +142,7 @@ jobs:
 
   docker:
     name: Docker - образ API собирается и стартует
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
       postgres:
