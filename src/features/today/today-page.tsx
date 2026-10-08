@@ -203,7 +203,8 @@ function MoveTable({ rows, kind, onOpen }: { rows: Item[]; kind: 'arrival' | 'de
                   {b.guestName}
                   {b.isVip ? <span className="tag tag-strong" style={{ marginLeft: 6 }}>VIP</span> : null}
                   <span className="sub">
-                    {done ? (kind === 'arrival' ? 'заселение оформлено' : 'выезд оформлен') : b.status === 'tentative' ? 'предварительная бронь' : `бронь ${b.number}`}
+                    {/* Что уже оформлено, говорит колонка статуса; здесь - номер брони, чтобы не повторять. */}
+                    {b.status === 'tentative' ? 'предварительная бронь' : `бронь ${b.number}`}
                   </span>
                 </td>
                 <td className="num">{kind === 'arrival' ? nightsLabel(diffDays(b.arrival, b.departure)) : done ? 'Выезд оформлен' : 'Проживает'}</td>
