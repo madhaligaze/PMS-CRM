@@ -18,6 +18,7 @@
     "dev:api": "pnpm -C backend dev",
     "test": "pnpm -C backend test",
     "test:api": "pnpm -C backend test",
+    "backend:push": "git subtree push --prefix=backend backend main",
     "e2e": "playwright test",
     "e2e:report": "playwright show-report",
     "typecheck:all": "pnpm typecheck && pnpm -C backend typecheck && tsc -p e2e/tsconfig.json --noEmit"

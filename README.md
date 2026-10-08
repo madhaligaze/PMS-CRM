@@ -89,6 +89,13 @@ API на пустой базе.
 
 ## Развёртывание
 
+**Railway**: один проект, сервисы `Postgres`, `api` (репозиторий
+[PMS-CRM_backend](https://github.com/madhaligaze/PMS-CRM_backend)) и `web` (этот
+репозиторий), связанные переменными. Пошагово, с таблицами переменных -
+[docs/deploy-railway.md](docs/deploy-railway.md).
+
+**Свой сервер**:
+
 ```bash
 JWT_SECRET="$(openssl rand -base64 48)" docker compose up -d --build
 ```
@@ -98,3 +105,17 @@ JWT_SECRET="$(openssl rand -base64 48)" docker compose up -d --build
 `PUBLIC_URL=https://...`). API применяет миграции сам при старте; первый вход
 на пустой базе - регистрация гостиницы. Образ API отдельно:
 `docker build -t bizdin-auyl-api ./backend`.
+
+## Отдельный репозиторий API
+
+Папка `backend/` зеркалируется в
+[PMS-CRM_backend](https://github.com/madhaligaze/PMS-CRM_backend) через
+`git subtree`: там она становится корнем репозитория со всей своей историей.
+Правки делаются здесь, в монорепозитории; в зеркало напрямую не коммитят.
+
+```bash
+# один раз
+git remote add backend https://github.com/madhaligaze/PMS-CRM_backend.git
+# после изменений в backend/ (закоммиченных)
+pnpm backend:push      # git subtree push --prefix=backend backend main
+```
